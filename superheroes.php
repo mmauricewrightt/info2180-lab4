@@ -63,10 +63,35 @@ $superheroes = [
   ], 
 ];
 
-?>
 
-<ul>
-<?php foreach ($superheroes as $superhero): ?>
-  <li><?= $superhero['alias']; ?></li>
-<?php endforeach; ?>
-</ul>
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $query = $_GET["query"];
+    $query = htmlspecialchars($query);
+
+    $response = ""; 
+
+    foreach ($superheroes as $character) { 
+        $response = "<p class='not-found'>Superhero Not Found</p>";
+        
+        if ($query === "") {
+
+            $response = "<ul class='result-list'>"; 
+            foreach ($superheroes as $character) {
+                $response .= "<li>{$character['alias']}</li>";
+            }
+            $response .= "</ul>";
+
+        } 
+
+        if(trim(strcasecmp($query, $character['name']) === 0) || trim(strcasecmp($query, $character['alias']) === 0)) {
+            $response = "<h3 class='alias'>{$character['alias']}</h3> <h4 class='name'>A.K.A {$character['name']}</h4> <p>{$character['biography']}</p>";
+            break;
+        } 
+        
+        
+    }
+}
+
+echo $response;
+
+?>
